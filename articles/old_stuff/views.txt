@@ -1,12 +1,10 @@
 from django.contrib.auth.models import Group
-from django.http import HttpRequest
 from django.shortcuts import render, HttpResponse, redirect
-from django.template import Context, loader
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
 from app_articles.decorators import allowed_users
-from app_articles.forms import NameForm, UserCreationForm, CreateUserForm, LoginUserForm
+from old_stuff.forms import CreateUserForm
 from app_articles.models import User
 
 from django.contrib.auth import authenticate, login, logout

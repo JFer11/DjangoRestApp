@@ -1,3 +1,3 @@
 SuperUser:
 username: joaquin
-passwrod: joacodjango
+password: joaquindjango

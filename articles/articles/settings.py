@@ -77,8 +77,12 @@ WSGI_APPLICATION = 'articles.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'djangorestbase',
+        'USER': 'joaquindjango',
+        'PASSWORD': 'password',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
     }
 }
 
@@ -100,6 +104,9 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+# FACT: Changes built in User Model (from django.contrib.auth.models) to CustomUser
+AUTH_USER_MODEL = 'app_articles.CustomUser'
 
 
 # Internationalization
