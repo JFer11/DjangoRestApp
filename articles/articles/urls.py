@@ -24,4 +24,5 @@ urlpatterns = [
     path('api/user/<str:username>', user_views.UserGetOnePutOneDeleteOne.as_view(), name='user_username'),
     path('api/article/', article_views.ArticleCreateOneOrGetAll.as_view(), name='user_no_id'),
     path('api/article/<int:pk>', article_views.ArticleGetOnePutOneDeleteOne.as_view(), name='user_id'),
+    path('api/user/login', user_views.UserLogin.as_view(), name='user_login'),
 ]

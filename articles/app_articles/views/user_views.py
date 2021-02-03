@@ -1,9 +1,12 @@
 from django.http import HttpResponse
+from django.shortcuts import redirect
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from app_articles.models import CustomUser
 from app_articles.serializers import UserSerializer
+from django.contrib.auth import authenticate, login, logout
+
 
 
 def example(request):
@@ -58,3 +61,21 @@ class UserGetOnePutOneDeleteOne(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+"""
+Ignore above, in process...
+class UserLogin(APIView):
+
+    def post(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+
+        if username and password is not None:
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                # Donde se guarda las sessions/cookies de login, es sessiondi?
+                # Esta bien acceder a traves de request.COOKIES?
+                login(request, user)
+                return Response('ADENTRO')
+            else:
+                return Response('afuerraaa')
+"""

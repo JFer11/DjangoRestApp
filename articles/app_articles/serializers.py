@@ -13,13 +13,26 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['id', 'username', 'email', 'first_name', 'last_name', 'gender', 'birth', 'level', 'is_staff',
-                  'confirmed_email', 'is_active', 'is_superuser']
+                  'confirmed_email', 'is_active', 'is_superuser', 'password']
         extra_kwargs = {
             'is_staff': {'write_only': True},
             'confirmed_email': {'write_only': True},
             'is_active': {'write_only': True},
-            'is_superuser': {'write_only': True}
+            'is_superuser': {'write_only': True},
+            'password': {'write_only': True}
         }
+
+    def create(self, validated_data):
+        user = super().create(validated_data)
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
+
+    def update(self, instance, validated_data):
+        user = super().update(instance, validated_data)
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
 
 
 class ArticleSerializer(serializers.Serializer):
