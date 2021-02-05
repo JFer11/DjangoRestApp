@@ -1,3 +1,9 @@
+# For Token Authentication
+from django.conf import settings
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from rest_framework.authtoken.models import Token
+# For Models
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.db import models
 from django.contrib.auth.models import PermissionsMixin
@@ -114,6 +120,24 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.username
+
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    """
+    What is this? Well, every time we call the save() method from a Model, two signals are sent. One at the beginning
+    of the method, an another at the end.
+    post_save is the name of the signal that runs at the end of the method save().
+    What are we doing here? @receiver allows us to execute a function after the selected signal (post_save in our case)
+    has been sent. Moreover, the function will be executed if the signal is send with sender argument
+    as settings.AUTH_USER_MODEL.
+    So, summarising, every time a CustomUser is created, this function will be executed and a token for the recently
+    created User is created.
+    """
+    if created:
+        """Remember that we can call save() method when we want to update a model, here we verify we are creating 
+        said model, and not updating it."""
+        Token.objects.create(user=instance)
 
 
 class Article(models.Model):
