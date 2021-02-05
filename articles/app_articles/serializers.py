@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from .exceptions import UserNotFound
-from .models import CustomUser, Article
+from .models import CustomUser, Article, UserManager
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -23,10 +23,13 @@ class UserSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
-        user = super().create(validated_data)
-        user.set_password(validated_data['password'])
-        user.save()
-        return user
+        username = validated_data['username']
+        email = validated_data['email']
+        password = validated_data['password']
+        del validated_data['username']
+        del validated_data['email']
+        del validated_data['password']
+        return CustomUser.objects.create_user(username, email, password, **validated_data)
 
     def update(self, instance, validated_data):
         user = super().update(instance, validated_data)
@@ -49,8 +52,10 @@ class ArticleSerializer(serializers.Serializer):
     text = serializers.CharField(style={'base_template': 'textarea.html'})
     created = serializers.DateTimeField(read_only=True)
     updated = serializers.DateTimeField(read_only=True)
-    # SerializerMethodField is a read_only field, so we cannot access to it in create method. Instead, if
-    author = serializers.SerializerMethodField(method_name='get_author')
+    # SerializerMethodField is a read_only field, so we cannot access to it in create method.
+    # author = serializers.SerializerMethodField(method_name='get_author')
+    # Doubt: How do I use query_set in PrimaryKeyRelatedField
+    author = serializers.PrimaryKeyRelatedField(read_only=True)
 
     def create(self, validated_data):
         """

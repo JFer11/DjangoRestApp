@@ -1,6 +1,0 @@
-path('login/', views.login_view, name='login'),
-path('logout/', views.logout_view, name='logout'),
-path('inside/', views.inside, name='inside'),
-path('register/', views.register, name='register'),
-path('customer/', views.only_customers, name='customer'),
-path('badg/', views.bad_groups, name='bad_groups'),

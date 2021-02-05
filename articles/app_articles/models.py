@@ -8,6 +8,8 @@ from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.db import models
 from django.contrib.auth.models import PermissionsMixin
 
+# RESPONDER LOS GITS COMMENTS
+
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
@@ -39,16 +41,14 @@ class UserManager(BaseUserManager):
         Not only the REQUIRED_FIELDS, but also USERNAME_FIELD and password (Remember: are required by default)
         """
 
-        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_staff', False)
         extra_fields.setdefault('is_superuser', False)
         return self._create_user(username, email, password, **extra_fields)
 
     def create_superuser(self, username, email, password, **extra_fields):
-        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_staff', False)
         extra_fields.setdefault('is_superuser', True)
 
-        if extra_fields.get('is_staff') is not True:
-            raise ValueError('Superuser must have is_staff=True.')
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
 
@@ -63,7 +63,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField('email address', max_length=255, unique=True)
     confirmed_email = models.BooleanField(default=False)
     # Para que demonios se usa el is_staff y is_active?
-    is_staff = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     # DOUBT: If I comment the line below, and I use the boolean field is_superuser from PermissionsMixin, it does
     # not appear in the AdminPage.
@@ -84,9 +84,11 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     level = models.CharField(max_length=3, choices=LEVEL)
     MALE = 'M'
     FEMALE = 'F'
+    OTHER = 'O'
     GENDERS = (
         (MALE, 'Male'),
-        (FEMALE, 'Female')
+        (FEMALE, 'Female'),
+        (OTHER, 'Other')
     )
     gender = models.CharField(max_length=1, choices=GENDERS)
 
