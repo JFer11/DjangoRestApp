@@ -1,3 +1,1 @@
-SuperUser:
-username: joaquin
-passwrod: joacodjango
+A Django Rest Api program.
