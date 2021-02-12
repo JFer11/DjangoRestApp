@@ -8,8 +8,6 @@ from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.db import models
 from django.contrib.auth.models import PermissionsMixin
 
-# RESPONDER LOS GITS COMMENTS
-
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
