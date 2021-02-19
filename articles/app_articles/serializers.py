@@ -38,7 +38,7 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 
-class ArticleSerializer(serializers.Serializer):
+class OLD_ArticleSerializer(serializers.Serializer):
     """
     Model serializer provides create() and update() methods. We do not use model Serializer because 'author' field
     requires an object, and we want to send not an object (CustomUser), but the username.
@@ -107,3 +107,27 @@ class ArticleSerializer(serializers.Serializer):
         # Author should not be edited when updating.
         instance.save()
         return instance
+
+
+class ArticleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Article
+        fields = ['id', 'title', 'text', 'created', 'updated', 'author']
+        read_only_fields = ['author']  # 'id', 'created' and 'updated', are already read_only.
+
+    """
+    Representation:
+    -----------------------------------------------------------
+    ArticleSerializer():
+        id = IntegerField(label='ID', read_only=True)
+        title = CharField(max_length=30, validators=[<UniqueValidator(queryset=Article.objects.all())>])
+        text = CharField(style={'base_template': 'textarea.html'})
+        created = DateTimeField(read_only=True)
+        updated = DateTimeField(read_only=True)
+        author = PrimaryKeyRelatedField(queryset=CustomUser.objects.all())
+    -----------------------------------------------------------
+    """
+
+    def create(self, validated_data):
+        validated_data['author'] = CustomUser.objects.get(username=self.context['request'].user.username)
+        return super().create(validated_data)

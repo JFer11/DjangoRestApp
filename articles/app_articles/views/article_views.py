@@ -1,5 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.response import Response
+
 from app_articles.paginations import MyPaginationArticles
 from app_articles.serializers import ArticleSerializer
 from app_articles.models import Article
@@ -23,3 +25,5 @@ class ArticleViewSet(viewsets.ModelViewSet):
         else:
             permission_classes = [IsAdminUser]
         return [permission() for permission in permission_classes]
+
+    # Lets do super().post(bla bla) in a try except block? so return a invalid json response if do not work?

@@ -41,7 +41,6 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
     pagination_class = MyPaginationUsers
 
     # retrieve() was override because we want to return a User depending on the username, not the id
@@ -76,6 +75,9 @@ class UserViewSet(viewsets.ModelViewSet):
         """
         if self.action in ['list', 'retrieve']:
             permission_classes = [IsAuthenticated]
+        elif self.action in ['create']:
+            permission_classes = []
         else:
             permission_classes = [IsAdminUser]
+
         return [permission() for permission in permission_classes]
