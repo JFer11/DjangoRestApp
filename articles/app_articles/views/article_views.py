@@ -25,5 +25,3 @@ class ArticleViewSet(viewsets.ModelViewSet):
         else:
             permission_classes = [IsAdminUser]
         return [permission() for permission in permission_classes]
-
-    # Lets do super().post(bla bla) in a try except block? so return a invalid json response if do not work?
