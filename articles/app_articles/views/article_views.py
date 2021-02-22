@@ -1,6 +1,5 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from rest_framework.response import Response
 
 from app_articles.paginations import MyPaginationArticles
 from app_articles.serializers import ArticleSerializer

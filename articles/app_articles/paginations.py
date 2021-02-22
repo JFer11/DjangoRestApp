@@ -36,6 +36,13 @@ class MyPaginationArticles(LimitOffsetPagination):
         return list(queryset[self.offset:self.offset + self.limit])
 
 
+class ArticleCommentsPagination(LimitOffsetPagination):
+    default_limit = 10
+    limit_query_param = 'limit'
+    offset_query_param = 'offset'
+    max_limit = 20
+
+
 class MyPaginationUsers(PageNumberPagination):
     page_query_param = 'page'
     page_size_query_param = 'size'

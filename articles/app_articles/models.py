@@ -155,3 +155,19 @@ class Article(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class ArticleComment(models.Model):
+    message = models.TextField(null=False)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    likes = models.SmallIntegerField(default=0)
+    dislikes = models.SmallIntegerField(default=0)
+    is_reply = models.BooleanField(default=False)
+
+    article = models.ForeignKey(Article, on_delete=models.CASCADE)
+    author_comment = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    comment_reply = models.ForeignKey('self', on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return self.id
