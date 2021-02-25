@@ -14,3 +14,10 @@ class ArticleCommentViewSet(viewsets.ModelViewSet):
     serializer_class = ArticleCommentSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = ArticleCommentsPagination
+
+    """def get_serializer_class(self):
+        # if self.action == 'list':
+        #     return serializers.ListaGruppi
+
+        return ArticleCommentSerializer
+    """

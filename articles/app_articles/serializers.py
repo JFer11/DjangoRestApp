@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
+from rest_framework.validators import UniqueTogetherValidator
+
 from .exceptions import UserNotFound
 from .models import CustomUser, Article, UserManager, ArticleComment
 
@@ -62,38 +64,100 @@ class ArticleSerializer(serializers.ModelSerializer):
         validated_data['author'] = CustomUser.objects.get(username=self.context['request'].user.username)
         return super().create(validated_data)
 
-
+"""
 class ArticleCommentSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = ArticleComment
         fields = ['id', 'message', 'created', 'updated', 'likes', 'dislikes', 'is_reply',
                   'article', 'author_comment', 'comment_reply']
-        read_only_fields = ['author_comment', 'likes', 'dislikes']  # 'id', 'created' and 'updated', are already read_only.
+        # 'id', 'created', 'updated' and 'is_reply', are already read_only.
+        read_only_fields = ['author_comment', 'likes', 'dislikes']
 
-    """Once the comment is POSTed, users may not be able to edit article's field."""
+    def is_a_comment_reply(self, obj):
+        return 'comment_reply' in self.context['request'].data
+
+    is_reply = serializers.SerializerMethodField(method_name='is_a_comment_reply')
+
     def validate_article(self, value):
+        # ""Once the comment is POSTed, users may not be able to edit article's field.""
+
         if self.instance and self.instance.article != value:
             raise ValidationError("You may not edit the article. Try to remove the comment and create a new one for "
                                   "the new Article.")
         return value
 
-    def validate_is_reply(self, value):
-        if self.instance and value and self.instance.comment_reply is None:
-            raise ValidationError("If is a comment reply, you have to explicit which article it replies.")
+    def validate_comment_reply(self, value):
+        # ""Once the comment is POSTed, users may not be able to edit comment_reply field.""
+
+        if self.instance and self.instance.article != value:
+            raise ValidationError("You may not edit the comment that you are replying. "
+                                  "Try to remove the comment and create a new one reply to the comment the new"
+                                  " comment.")
         return value
+
+    def validate(self, attrs):
+        # ""Use this method to validate across multiple fields""
+        return super().validate(attrs)
+
+
+    #""
+    #Representation:
+    #-----------------------------------------------------------
+    
+    #-----------------------------------------------------------
+    #""
+    def create(self, validated_data):
+        # Author_comment is a read_only field, here we set the author depending on the user who is making the request.
+        validated_data['author_comment'] = CustomUser.objects.get(username=self.context['request'].user.username)
+        return super().create(validated_data)
+"""
+
+# TODO TENGO QUE SEPARAR EN RESPONDER ARTICULOS Y RESPONDER COMENTARIOS
+
+
+class ArticleCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ArticleComment
+        fields = ['id', 'message', 'created', 'updated', 'likes', 'dislikes',
+                  'article', 'author_comment']
+        # 'id', 'created', 'updated' and are already read_only.
+        read_only_fields = ['author_comment', 'likes', 'dislikes']
+
+    def validate_article(self, value):
+        """Once the comment is POSTed, users may not be able to edit article's field."""
+
+        if self.instance and self.instance.article != value:
+            raise ValidationError("You may not edit the article. Try to remove the comment and create a new one for "
+                                  "the new Article.")
+        return value
+
+    def validate(self, attrs):
+        # ""Use this method to validate across multiple fields""
+        return super().validate(attrs)
 
     """
     Representation:
     -----------------------------------------------------------
-    ArticleSerializer():
-        id = IntegerField(label='ID', read_only=True)
-        title = CharField(max_length=30, validators=[<UniqueValidator(queryset=Article.objects.all())>])
-        text = CharField(style={'base_template': 'textarea.html'})
-        created = DateTimeField(read_only=True)
-        updated = DateTimeField(read_only=True)
-        author = PrimaryKeyRelatedField(queryset=CustomUser.objects.all())
+
     -----------------------------------------------------------
     """
     def create(self, validated_data):
+        # Author_comment is a read_only field, here we set the author depending on the user who is making the request.
         validated_data['author_comment'] = CustomUser.objects.get(username=self.context['request'].user.username)
         return super().create(validated_data)
+
+
+class ReplyCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ArticleComment
+
+
+    def validate_comment_reply(self, value):
+        # ""Once the comment is POSTed, users may not be able to edit comment_reply field.""
+
+        if self.instance and self.instance.article != value:
+            raise ValidationError("You may not edit the comment that you are replying. "
+                                  "Try to remove the comment and create a new one reply to the comment the new"
+                                  " comment.")
+        return value
