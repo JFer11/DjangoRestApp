@@ -6,6 +6,7 @@ from rest_framework import viewsets
 from django.shortcuts import get_object_or_404
 
 from app_articles.models import CustomUser
+from app_articles.paginations import UsersPagination
 from app_articles.serializers import UserSerializer
 
 
@@ -41,6 +42,7 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = UsersPagination
 
     # retrieve() was override because we want to return a User depending on the username, not the id
     def retrieve(self, request, *args, **kwargs):
