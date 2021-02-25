@@ -106,7 +106,8 @@ class GetAllArticlesTestCase(APITestCase):
     def test_get_all_articles(self):
         response = self.client.get('/articles/')
 
-        self.assertEqual(self.all_articles, response.json()['results'])
+        for article in self.all_articles:
+            self.assertIn(article, response.json()['results'])
         self.assertEqual(len(self.all_articles), response.json()['count'])
         self.assertEqual(200, response.status_code)
 
