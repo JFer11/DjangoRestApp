@@ -145,7 +145,6 @@ class Article(models.Model):
     text = models.TextField(null=False)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    is_public = models.BooleanField(null=False)
     """DOUBT: I thought that models.ForeignKey saves integers ids. However, in serializers.py I created the field
     as a CharField and a username was shown. I have an idea about what is probably happening here. When I create an 
     'Article' I have to give a CustumUser model, not the id (we can do Article.author.first_name). So, when I 
@@ -153,23 +152,6 @@ class Article(models.Model):
     And the whole object is represented through __str__ method, which is defined to return the username.   
     """
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    users_reports = models.ManyToManyField(CustomUser, related_name='reports_users')
 
     def __str__(self):
         return self.title
-
-
-class ArticleComment(models.Model):
-    message = models.TextField(null=False)
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
-    likes = models.SmallIntegerField(default=0)
-    dislikes = models.SmallIntegerField(default=0)
-    is_reply = models.BooleanField(default=False)
-
-    article = models.ForeignKey(Article, on_delete=models.CASCADE)
-    author_comment = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    comment_reply = models.ForeignKey('self', on_delete=models.CASCADE, null=True)
-
-    def __str__(self):
-        return str(self.id)

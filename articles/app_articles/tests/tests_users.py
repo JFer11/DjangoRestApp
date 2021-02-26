@@ -14,31 +14,19 @@ Note: is important to put the HTTP_ before the name of the header, The answer wh
 do this is extremely poorly documented, but it seems django does its own parsing of the headers passed in.
 """
 
-"""
-You might want to look into faker library: https://faker.readthedocs.io/en/master/
-You might want to look at https://github.com/FactoryBoy/factory_boy
-"""
-
-# Todo: we could test permissions. Because depending on the HTTP method, which permissions we need.
-# Todo: I repeat a lot the code in several setUp classes. That could be improved.
-# Note: I believe setuUp that it runs within the test transaction, while setUpClass I have to tearDown it manually.
-
 
 # python manage.py test app_articles.tests.tests_users.UserRegistrationTestCase
 class UserRegistrationTestCase(APITestCase):
-    """
     @classmethod
     def setUpClass(cls):
         # APITestCase includes a self.client, so it is not necessary to define it here
         # cls.client = APIClient()
         pass
-    """
 
     @classmethod
     def tearDownClass(cls):
         CustomUser.objects.all().delete()
         Article.objects.all().delete()
-        super().tearDownClass()
 
     def test_create_user(self):
         user_data = {
@@ -100,7 +88,6 @@ class UserLoginTestCase(APITestCase):
     def tearDownClass(cls):
         CustomUser.objects.all().delete()
         Article.objects.all().delete()
-        super().tearDownClass()
 
     def test_login_user(self):
         credentials = {

@@ -1,17 +1,11 @@
 from django.db.models.query import QuerySet
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from rest_framework.response import Response
 
 from app_articles.exceptions import NullRequest
 from app_articles.paginations import ArticlesPagination
-from app_articles.permissions import PublicArticleOrLoggedUser
 from app_articles.serializers import ArticleSerializer
 from app_articles.models import Article
-
-
-def is_logged(request):
-    return bool(request.user and request.user.is_authenticated)
 
 
 class ArticleViewSet(viewsets.ModelViewSet):
@@ -20,6 +14,7 @@ class ArticleViewSet(viewsets.ModelViewSet):
     """
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
+    permission_classes = [IsAuthenticated]
     pagination_class = ArticlesPagination
 
     def get_asc_or_desc(self, request, queryset):
@@ -44,7 +39,6 @@ class ArticleViewSet(viewsets.ModelViewSet):
                 % self.__class__.__name__
         )
 
-        # what I added:
         queryset = self.get_asc_or_desc(self.request, self.queryset)
 
         if isinstance(queryset, QuerySet):
@@ -56,27 +50,9 @@ class ArticleViewSet(viewsets.ModelViewSet):
         """
         Instantiates and returns the list of permissions that this view requires.
         """
-        if self.action in ['retrieve']:
-            permission_classes = [PublicArticleOrLoggedUser]
-        elif self.action in ['list']:
-            permission_classes = []
+        if self.action in ['list', 'retrieve']:
+            permission_classes = [IsAuthenticated]
         else:
             permission_classes = [IsAdminUser]
         return [permission() for permission in permission_classes]
-
-    def list(self, request, *args, **kwargs):
-
-        queryset = self.filter_queryset(self.get_queryset())
-
-        # what I added:
-        if not is_logged(request):
-            queryset = queryset.filter(is_public=True)
-
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
 
