@@ -153,6 +153,7 @@ class Article(models.Model):
     And the whole object is represented through __str__ method, which is defined to return the username.   
     """
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    users_reports = models.ManyToManyField(CustomUser, related_name='reports_users')
 
     def __str__(self):
         return self.title
