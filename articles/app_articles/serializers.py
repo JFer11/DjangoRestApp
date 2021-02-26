@@ -44,7 +44,7 @@ class UserSerializer(serializers.ModelSerializer):
 class ArticleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
-        fields = ['id', 'title', 'text', 'created', 'updated', 'author']
+        fields = ['id', 'title', 'text', 'created', 'updated', 'author', 'is_public']
         read_only_fields = ['author']  # 'id', 'created' and 'updated', are already read_only.
 
     """

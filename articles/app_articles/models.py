@@ -145,6 +145,7 @@ class Article(models.Model):
     text = models.TextField(null=False)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    is_public = models.BooleanField(null=False)
     """DOUBT: I thought that models.ForeignKey saves integers ids. However, in serializers.py I created the field
     as a CharField and a username was shown. I have an idea about what is probably happening here. When I create an 
     'Article' I have to give a CustumUser model, not the id (we can do Article.author.first_name). So, when I 
