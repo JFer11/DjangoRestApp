@@ -170,4 +170,4 @@ class ArticleComment(models.Model):
     comment_reply = models.ForeignKey('self', on_delete=models.CASCADE, null=True)
 
     def __str__(self):
-        return self.id
+        return str(self.id)
