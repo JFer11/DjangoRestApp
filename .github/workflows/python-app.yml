@@ -17,9 +17,9 @@ jobs:
       with:
         python-version: 3.6
     - name: Install dependencies
+      working-directory: ./articles
       run: |
         python -m pip install --upgrade pip
-        pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Run migrations
       working-directory: ./articles
