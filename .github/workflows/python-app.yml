@@ -21,6 +21,18 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Create .env file
+      uses: SpicyPizza/create-envfile@v1.0
+        with:
+        envkey_DATABASE_ENGINE: "django.db.backends.postgresql_psycopg2"
+        envkey_DATABASE_NAME: "djangorestbase"
+        envkey_DATABASE_USER: "joaquindjango"
+        envkey_DATABASE_PASSWORD: "password"
+        envkey_DATABASE_HOST: "127.0.0.1"
+        envkey_DATABASE_PORT: 5432
+        envkey_SECRET_KEY=@_x: "lnoyv&4jv-4(h)783_y!c@!+$sxi=$(87@&sw+*z9rhd$i"
+        directory: ./articles
+        file_name: .env
     - name: Run migrations
       working-directory: ./articles
       run: python manage.py migrate
